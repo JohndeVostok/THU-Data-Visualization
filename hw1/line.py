@@ -19,13 +19,11 @@ if __name__ == "__main__":
     plt.subplot(121)
     for i in range(63):
         plt.cla()
-        plt.xlim(0, 320000)
-        plt.ylim(0, 16000)
-        plt.xlabel("confirm")
-        plt.ylabel("dead")
-        plt.title(timeline[i] + " Day %d" % (i+1))        
+        plt.xlim(0, 64)
+        plt.xlabel("day")
+        plt.ylabel("confirm")
         for j in range(len(country)):
             c = country[j]
-            plt.scatter([confirm[country_index[c]][i]], [dead[country_index[c]][i]], s=avail[country_index[c]][i]/100, alpha=0.6, label=c, color=clist[j])
+            plt.plot(range(i+1), confirm[country_index[c]][:i+1], color=clist[j])
         plt.pause(0.1)
     plt.show()
