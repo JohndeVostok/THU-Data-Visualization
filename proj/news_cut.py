@@ -14,39 +14,58 @@ if __name__ == "__main__":
         data[date]["comment_file"] = "news_data/comment/" + filename
 
     data = dict(sorted(data.items(), key=lambda d:d[0]))
+    
+    with open("stopword.json", "r") as f:
+        stop_word = json.load(f)
+    with open("keyword.json", "r") as f:
+        key_word = json.load(f)
 
+    final_data = {}
     for date in data:
-        print("Processing: " + date)
         try:
             with open(data[date]["news_file"], "r") as f:
                 news = json.load(f)
             with open(data[date]["comment_file"], "r") as f:
                 comment = json.load(f)
-            data[date]["flag"] = True
         except Exception as e:
-            print("ERROR: " + date + " " + str(e))
-            data[date]["flag"] = False
             continue
 
-        data[date]["title"] = []
-        data[date]["news"] = []
-        data[date]["comment"] = []
-        data[date]["news_cut"] = []
-        data[date]["comment_cut"] = []
+        meta_data = []
 
         for i in range(len(news)):
-            data[date]["title"].append(news[i]["title"])
-            data[date]["news"].append(news[i]["meta"]["content"])
-            data[date]["news_cut"].append(jieba.lcut(news[i]["meta"]["content"]))
-            data[date]["comment"].append([])
-            data[date]["comment_cut"].append([])
+            news_title = news[i]["title"]
+            news_content = news[i]["meta"]["content"]
+            news_cut_tmp = jieba.lcut(news_content)
+            news_cut = []
+
+            flag = False
+            for word in key_word:
+                if word in stop_word:
+                    continue
+                if not flag and word in news_cut:
+                    flag = True
+                news_cut.append(word)
+
+            if flag:
+                tmp = {}
+                tmp["title"] = news_title
+                tmp["news"] = news_content
+                tmp["news_cut"] = news_cut
+                tmp["comment_num"] = 0
+                meta_data.append(tmp)
+
+        title = [tmp["title"] for tmp in meta_data]
         for i in range(len(comment)):
-            if comment[i]["title"] not in data[date]["title"]:
+            comment_title = comment[i]["title"]
+            comment_num = len(comment[i]["comment"])
+
+            if comment_title not in title:
                 continue
-            idx = data[date]["title"].index(comment[i]["title"])
-            for tmp in comment[i]["comment"]:
-                data[date]["comment"][idx].append(tmp["content"])
-                data[date]["comment_cut"][idx].append(jieba.lcut(tmp["content"]))
+            idx = title.index(comment_title)
+            meta_data[idx]["comment_num"] = comment_num
+
+        final_data[date] = meta_data
+
     with open("news_data.json", "w") as f:
         json.dump(data, f)
 
