@@ -1,14 +1,17 @@
+#coding=utf-8
 import os
+import sys
 import csv
 import json
 import pickle
 
 if __name__ == "__main__":
-    files = os.listdir("weibo")
+    csv.field_size_limit(sys.maxsize)
+    files = os.listdir("data")
     file_list = []
     for filename in files:
         if filename.split('.')[-1] == "csv":
-            s = "weibo/" + filename
+            s = "data/" + filename
             file_list.append(s)
 
 
