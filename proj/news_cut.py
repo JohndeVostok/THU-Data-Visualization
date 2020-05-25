@@ -33,6 +33,8 @@ if __name__ == "__main__":
         meta_data = []
 
         for i in range(len(news)):
+            if i % 100 == 0:
+                print(date + " : " + str(i) + "/" + str(len(news)))
             news_title = news[i]["title"]
             news_content = news[i]["meta"]["content"]
             news_cut_tmp = jieba.lcut(news_content)
@@ -40,13 +42,14 @@ if __name__ == "__main__":
 
             flag = False
             for word in key_word:
-                if word in stop_word:
-                    continue
-                if not flag and word in news_cut:
+                if word in news_cut_tmp:
                     flag = True
-                news_cut.append(word)
+                    break
 
             if flag:
+                for word in news_cut_tmp:
+                    if word not in stop_word:
+                        news_cut.append(word)
                 tmp = {}
                 tmp["title"] = news_title
                 tmp["news"] = news_content
@@ -65,7 +68,8 @@ if __name__ == "__main__":
             meta_data[idx]["comment_num"] = comment_num
 
         final_data[date] = meta_data
+        print("Finish: " + date + " : " + str(len(meta_data)))
 
     with open("news_data.json", "w") as f:
-        json.dump(data, f)
+        json.dump(final_data, f)
 
