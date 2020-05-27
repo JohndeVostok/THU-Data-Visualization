@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
             if flag:
                 for word in news_cut_tmp:
-                    if word not in stop_word:
+                    if len(word) > 1 and word not in stop_word:
                         news_cut.append(word)
                 tmp = {}
                 tmp["title"] = news_title
