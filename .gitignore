@@ -9,3 +9,7 @@ proj/*.pkl
 proj/news_data
 proj/*.json
 proj/*.csv
+
+hw2/*.json
+hw2/*.csv
+hw2/*.html
