@@ -5,7 +5,6 @@ from pyecharts.charts import Pie
 
 DATA_FILE = "imdb_data.json"
 
-
 if __name__ == "__main__":
     with open(DATA_FILE, "r") as f:
         data = json.load(f)
@@ -24,7 +23,7 @@ if __name__ == "__main__":
         tmp = sorted([[t["title"].replace("\"", "*").replace("\'", "+"), t["rating"]] for t in meta_data[i]], key=lambda t:t[1], reverse=True)[:5]
         tooltip[genres[i]] = tmp
     tooltip_json = json.dumps(tooltip)
-    print(tooltip["Drama"])
+    # print(tooltip["Drama"])
 
     pie = Pie()
     pie.add_js_funcs("data = JSON.parse(\'" + tooltip_json + "\');")
@@ -40,4 +39,4 @@ if __name__ == "__main__":
         title_opts=opts.TitleOpts(title="IMDB Pie"),
         legend_opts=opts.LegendOpts(is_show=False)
     )
-    pie.render()
+    pie.render("pie.html")

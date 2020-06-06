@@ -18,6 +18,10 @@ if __name__ == "__main__":
         movie = {}
         movie["title"] = line[2]
         try:
+            movie["year"] = int(line[8])
+        except:
+            movie["year"] = -1
+        try:
             movie["rating"] = float(line[5])
         except:
             movie["rating"] = -1
