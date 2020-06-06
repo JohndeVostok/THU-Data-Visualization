@@ -20,7 +20,7 @@ if __name__ == "__main__":
     tooltip = {}
     for i in range(len(genres)):
         data_pair.append([genres[i], len(meta_data[i])])
-        tmp = sorted([[t["title"].replace("\"", "*").replace("\'", "+"), t["rating"]] for t in meta_data[i]], key=lambda t:t[1], reverse=True)[:5]
+        tmp = sorted([[t["title"].replace("\"", "&quot").replace("\'", "&apos"), t["rating"]] for t in meta_data[i]], key=lambda t:t[1], reverse=True)[:5]
         tooltip[genres[i]] = tmp
     tooltip_json = json.dumps(tooltip)
     # print(tooltip["Drama"])
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         data_pair=data_pair,
         tooltip_opts=opts.TooltipOpts(
             is_show=True,
-            formatter=JsCode("function(params){ text = \'\'; reg1 = new RegExp(\'\\*\' , \'g\'); reg2 = new RegExp(\'\\+\', \'g\'); for (i = 0; i < 5; i++) { title = data[params.name][i][0]; title = title.replace(reg1, \'&quot\'); title = title.replace(reg2, \'&apos\'); rating = data[params.name][i][1]; text += title + \': \' + rating + '<br>'}; return text;}")
+            formatter=JsCode("function(params){ text = \'\'; for (i = 0; i < 5; i++) { title = data[params.name][i][0]; rating = data[params.name][i][1]; text += title + \': \' + rating + '<br>'}; return text;}")
         )
     )
     pie.set_global_opts(

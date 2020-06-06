@@ -1,5 +1,6 @@
 hw1/data.pkl
-hw1/world.csv
+hw1/*.csv
+hw1/*.txt
 
 proj/weibo
 proj/data
