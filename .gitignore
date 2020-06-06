@@ -7,5 +7,5 @@ proj/comment
 proj/*.pkl
 
 proj/news_data
-proj/news_data.json
-proj/news_tmp.json
+proj/*.json
+proj/*.csv
