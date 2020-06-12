@@ -10,6 +10,7 @@ proj/*.pkl
 proj/news_data
 proj/*.json
 proj/*.csv
+proj/*.html
 
 hw2/*.json
 hw2/*.csv
