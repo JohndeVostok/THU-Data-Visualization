@@ -1,4 +1,5 @@
 import json
+import argparse
 from pyecharts import options as opts
 from pyecharts.commons.utils import JsCode
 from pyecharts.charts import ThemeRiver, WordCloud, Tab, Grid, Timeline, Bar, Line
@@ -22,7 +23,11 @@ def format_titles(titles):
 
 
 if __name__ == "__main__":
-    topic = 0
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--topic", default=4, type=int)
+    args = parser.parse_args()
+    topic = args.topic
+    topics = ["国内政治", "国际政治", "生命安全", "经济局势", "全部议题"]
 
     with open(THEME_DATA_FILE, "r") as f:
         data = json.load(f)
@@ -86,7 +91,7 @@ if __name__ == "__main__":
             data_pair=tmp_data
         )
         wc.set_global_opts(
-            title_opts=opts.TitleOpts(title="词频统计", pos_top="top", pos_left="left"),
+            title_opts=opts.TitleOpts(title="词频统计", pos_top="top", pos_left="center"),
         )
         wc_tl.add(wc, date)
         idx += 1
@@ -121,10 +126,11 @@ if __name__ == "__main__":
 
 
     tab = Tab()
+    tab.add_js_funcs("var div = document.createElement('div'); var divs = document.createAttribute('style'); divs.value = 'text-align:center'; div.setAttributeNode(divs); var divc = document.createAttribute('class'); divc.value = 'button_group'; div.setAttributeNode(divc); var but = document.createElement('button'); but.innerHTML='" + topics[0] + "'; but.onclick = function() { window.location.href='index0.html' }; div.appendChild(but); var but = document.createElement('button'); but.innerHTML='" + topics[1] + "'; but.onclick = function() { window.location.href='index1.html' }; div.appendChild(but); var but = document.createElement('button'); but.innerHTML='" + topics[2] + "'; but.onclick = function() { window.location.href='index2.html' }; div.appendChild(but); var but = document.createElement('button'); but.innerHTML='" + topics[3] + "'; but.onclick = function() { window.location.href='index3.html' }; div.appendChild(but); var but = document.createElement('button'); but.innerHTML='" + topics[4] + "'; but.onclick = function() { window.location.href='index4.html' }; div.appendChild(but); document.body.appendChild(div);")
     tab.add(chart=theme_river, tab_name="议题变化")
     tab.add(chart=bar, tab_name="情绪变化")
     tab.add(chart=line, tab_name="疫情状况")
     tab.add(chart=wc_tl, tab_name="词频统计")
-    tab.render("index.html")
+    tab.render("index" + str(topic) + ".html")
 
 
