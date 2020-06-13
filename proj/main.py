@@ -29,27 +29,30 @@ if __name__ == "__main__":
     topic = args.topic
     topics = ["国内政治", "国际政治", "生命安全", "经济局势", "全部议题"]
 
+    with open("theme_river_data.json", "r") as f:
+        tr_series, tr_data = json.load(f)
+
     with open(THEME_DATA_FILE, "r") as f:
         data = json.load(f)
     dates = ["2020-" + date for date in data]
 
-    tr_series = []
-    cnt = 0
-    for t in data['01-01'][topic]:
-        if t[0] not in BLACK_LIST:
-            tr_series.append(t[0])
-            cnt += 1
-        if cnt >= 10:
-            break
-    tr_data = []
-    for date in data:
-        cnt = 0
-        idx = 0
-        while cnt < 10:
-            if data[date][topic][idx][0] not in BLACK_LIST:
-                tr_data.append(["2020-" + date, data[date][topic][idx][1], data[date][topic][idx][0]])
-                cnt += 1
-            idx += 1
+    # tr_series = []
+    # cnt = 0
+    # for t in data['01-01'][topic]:
+    #     if t[0] not in BLACK_LIST:
+    #         tr_series.append(t[0])
+    #         cnt += 1
+    #     if cnt >= 10:
+    #         break
+    # tr_data = []
+    # for date in data:
+    #     cnt = 0
+    #     idx = 0
+    #     while cnt < 10:
+    #         if data[date][topic][idx][0] not in BLACK_LIST:
+    #             tr_data.append(["2020-" + date, data[date][topic][idx][1], data[date][topic][idx][0]])
+    #             cnt += 1
+    #         idx += 1
     
     wc_data = [("2020-" + date, []) for date in data]
     for idx in range(69):
@@ -70,8 +73,8 @@ if __name__ == "__main__":
 
     theme_river = ThemeRiver(init_opts=opts.InitOpts(width="1200px", height="600px"))
     theme_river.add(
-        series_name=tr_series,
-        data=tr_data,
+        series_name=tr_series[topic],
+        data=tr_data[topic],
         label_opts=opts.LabelOpts(is_show=False),
         singleaxis_opts=opts.SingleAxisOpts(
             pos_top="50", pos_bottom="50", type_="time"
@@ -92,6 +95,41 @@ if __name__ == "__main__":
         )
         wc.set_global_opts(
             title_opts=opts.TitleOpts(title="词频统计", pos_top="top", pos_left="center"),
+            tooltip_opts=opts.TooltipOpts(is_show=True),
+            graphic_opts=[
+                opts.GraphicGroup(
+                    graphic_item=opts.GraphicItem(right="0%", top="0%"),
+                    children=[
+                        opts.GraphicRect(
+                            graphic_item=opts.GraphicItem(
+                                z=500, left="center", top="middle"
+                            ),
+                            graphic_shape_opts=opts.GraphicShapeOpts(width=280, height=130),
+                            graphic_basicstyle_opts=opts.GraphicBasicStyleOpts(
+                                fill="rgba(0,0,0,0.3)",
+                                #stroke="#555",
+                                line_width=2,
+                                shadow_blur=8,
+                                shadow_offset_x=3,
+                                shadow_offset_y=3,
+                                shadow_color="rgba(0,0,0,0.3)",
+                            ),
+                        ),
+                        opts.GraphicText(
+                            graphic_item=opts.GraphicItem(
+                                left="center", top="middle", z=500
+                            ),
+                            graphic_textstyle_opts=opts.GraphicTextStyleOpts(
+                                text="\n\n".join(top_titles[idx][:5]),
+                                font="10px Microsoft YaHei",
+                                graphic_basicstyle_opts=opts.GraphicBasicStyleOpts(
+                                    fill="#fff"
+                                ),
+                            ),
+                        ),
+                    ],
+                )
+            ],
         )
         wc_tl.add(wc, date)
         idx += 1
